@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motor-mitra-service-desk"
+version = "0.1.0"
+description = "Bilingual Hindi/Hinglish and English voice AI service desk"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg>=0.30,<1",
+    "deepeval>=4.3.1",
+    "fastapi>=0.118,<1",
+    "langfuse>=4,<5",
+    "livekit-agents[deepgram,elevenlabs,groq,silero]~=1.8",
+    "opentelemetry-sdk>=1.38,<2",
+    "pydantic>=2.11,<3",
+    "pydantic-settings>=2.10,<3",
+    "python-dotenv>=1.2,<2",
+    "uvicorn[standard]>=0.37,<1",
+]
+
+[dependency-groups]
+dev = [
+    "asyncpg-stubs>=0.32,<0.33",
+    "basedpyright>=1.31",
+    "httpx>=0.28,<1",
+    "pytest>=8.4",
+    "pytest-asyncio>=1.1",
+    "ruff>=0.12",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/agent",
+    "src/configuration",
+    "src/domain",
+    "src/evaluation",
+    "src/integrations",
+    "src/observability",
+    "src/storage",
+    "src/web_api",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "unit: tests that do not require external services",
+    "integration: tests that require PostgreSQL",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+
+[tool.basedpyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = ["src"]
+exclude = ["tests"]
+venvPath = "."
+venv = ".venv"
+reportMissingTypeStubs = "warning"
